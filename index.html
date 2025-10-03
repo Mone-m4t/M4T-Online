@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M4T - ຊື້ຂາຍສິນຄ້າອອນລາຍ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Lao', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .search-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .search-box:focus {
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .menu-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .menu-item.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        .category-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .product-price {
+            font-size: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .quantity-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .whatsapp-btn {
+            width: 100%;
+            padding: 10px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .whatsapp-btn:hover {
+            background: #20ba5a;
+        }
+        
+        .admin-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 50;
+            transition: transform 0.3s;
+        }
+        
+        .admin-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .product-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .sales-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .sales-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+            }
+            
+            .product-img {
+                height: 150px;
+            }
+            
+            .product-info {
+                padding: 10px;
+            }
+            
+            .product-name {
+                font-size: 14px;
+            }
+            
+            .product-price {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            <div class="logo">🐼ເອັມໂຟຣທີ🔖</div>
+        </div>
+    </div>
+    
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="ຄົ້ນຫາສິນຄ້າ..." oninput="searchProducts(this.value)">
+    </div>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">ໝວດໝູ່ສິນຄ້າ</div>
+        <div class="menu-item active" data-category="all" onclick="showCategory('all', event)">📦 ທັງໝົດ</div>
+        <div class="menu-item" data-category="cars" onclick="showCategory('cars', event)">🚗 ລົດມືສອງ</div>
+        <div class="menu-item" data-category="phones" onclick="showCategory('phones', event)">📱 ມືຖື & ອຸປະກອນເສີມ</div>
+        <div class="menu-item" data-category="clothes" onclick="showCategory('clothes', event)">👕 ເສື້ອຜ້າ</div>
+        <div class="menu-item" data-category="daily" onclick="showCategory('daily', event)">🏠 ເຄື່ອງໃຊ້ປະຈຳວັນ</div>
+        <div class="menu-item" data-category="food" onclick="showCategory('food', event)">🍔 ອາຫານ & ເຄື່ອງດື່ມ</div>
+        <div class="menu-item" data-category="freelance" onclick="showCategory('freelance', event)">💼 ວຽກອິດສະຫຼະ</div>
+        <div class="menu-item" data-category="jobs" onclick="showCategory('jobs', event)">👔 ຫາວຽກ</div>
+        <div class="menu-item" data-category="news" onclick="showCategory('news', event)">📰 ຂ່າວສານ</div>
+<div class="center-container">
+    <h7>Developer By: Kham Mone</h7>
+</div>
+
+<style>
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 10vh; /* ສູງເທົ່າໜ້າຈໍ */
+    margin: 0;
+    background: none; /* ບໍ່ມີພື້ນຫຼັງ */
+}
+
+h7 {
+    font-family: Arial, sans-serif; /* ຟອນທີ່ງ່າຍຕໍ່ການອ່ານ */
+    font-size: 1.2em; /* ຂະໜາດຟອນທີ່ເໝາະສົມ */
+    color: #333; /* ສີຂໍ້ຄວາມເປັນສີດຳອ່ອນ */
+    text-align: center; /* ຈັດຂໍ້ຄວາມໃຫ້ຢູ່ກາງ */
+}
+</style>
+    </div>
+    
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    
+    <div class="container">
+        <div class="category-title" id="categoryTitle">ທັງໝົດ</div>
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+    
+    <button class="admin-btn" onclick="showAdminLogin()">⚙</button>
+    
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-title">🛠️ຜູ້ດູແລລະບົບ</div>
+            <div class="form-group">
+                <label>ລະຫັດ:</label>
+                <input type="password" id="adminPassword" placeholder="ໃສ່ລະຫັດ" onkeypress="handlePasswordEnter(event)">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="checkPassword()">ເຂົ້າສູ່ລະບົບ</button>
+                <button class="btn btn-secondary" onclick="closeModal('loginModal')">ຍົກເລີກ</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-title">ຈັດການສິນຄ້າ</div>
+            <div class="form-group">
+                <label>ໝວດໝູ່:</label>
+                <select id="adminCategory">
+                    <option value="cars">ລົດມືສອງ</option>
+                    <option value="phones">ມືຖື & ອຸປະກອນເສີມ</option>
+                    <option value="clothes">ເສື້ອຜ້າ</option>
+                    <option value="daily">ເຄື່ອງໃຊ້ປະຈຳວັນ</option>
+                    <option value="food">ອາຫານ & ເຄື່ອງດື່ມ</option>
+                    <option value="freelance">ວຽກອິດສະຫຼະ</option>
+                    <option value="jobs">ຫາວຽກ</option>
+                    <option value="news">ຂ່າວສານ</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>URL ຮູບພາບ:</label>
+                <input type="text" id="productImage" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="form-group">
+                <label>ຊື່ສິນຄ້າ:</label>
+                <input type="text" id="productName" placeholder="ຊື່ສິນຄ້າ">
+            </div>
+            <div class="form-group">
+                <label>ລາຄາ (LAK):</label>
+                <input type="text" id="productPrice" placeholder="Number or Text (e.g. 100000 or Negotiable)">
+            </div>
+            <div class="form-group">
+                <label>ເບີ WhatsApp:</label>
+                <input type="text" id="whatsappNumber" placeholder="02012345678">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addProduct()">ເພີ່ມສິນຄ້າ</button>
+                <button class="btn btn-danger" onclick="showDeleteList()">ລຶບສິນຄ້າ</button>
+                <button class="btn btn-primary" onclick="showSalesList()">ລາຍງານຍອດຂາຍ</button>
+                <button class="btn btn-secondary" onclick="closeModal('adminModal')">ປິດ</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-title">ລຶບສິນຄ້າ</div>
+            <div class="form-group">
+                <label>ຄົ້ນຫາສິນຄ້າ:</label>
+                <input type="text" id="searchDelete" placeholder="ຄົ້ນຫາສິນຄ້າ..." oninput="updateDeleteList(this.value)">
+            </div>
+            <div class="form-group">
+                <label>ເລືອກໝວດໝູ່:</label>
+                <select id="deleteCategory" onchange="updateDeleteList('')">
+                    <option value="cars">ລົດມືສອງ</option>
+                    <option value="phones">ມືຖື & ອຸປະກອນເສີມ</option>
+                    <option value="clothes">ເສື້ອຜ້າ</option>
+                    <option value="daily">ເຄື່ອງໃຊ້ປະຈຳວັນ</option>
+                    <option value="food">ອາຫານ & ເຄື່ອງດື່ມ</option>
+                    <option value="freelance">ວຽກອິດສະຫຼະ</option>
+                    <option value="jobs">ຫາວຽກ</option>
+                    <option value="news">ຂ່າວສານ</option>
+                </select>
+            </div>
+            <div class="product-list" id="deleteList"></div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">ປິດ</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="salesModal">
+        <div class="modal-content">
+            <div class="modal-title">ລາຍງານຍອດຂາຍ</div>
+            <div class="sales-list" id="salesList"></div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="closeModal('salesModal')">ປິດ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let products = {};
+        let sales = [];
+        let currentCategory = 'all';
+        let whatsappNumber = '02097870611'; // Default WhatsApp number
+        const noQtyCategories = new Set(['cars', 'freelance', 'jobs', 'news']);
+        
+        // Security: Sanitize function to prevent XSS
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
+        
+        // Security: Validate URL
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+        
+        // Security: Validate product structure
+        function validateProduct(product) {
+            return (
+                typeof product === 'object' &&
+                product !== null &&
+                typeof product.id === 'string' &&
+                typeof product.category === 'string' &&
+                typeof product.image === 'string' && isValidUrl(product.image) &&
+                typeof product.name === 'string' &&
+                (typeof product.price === 'string' || typeof product.price === 'number')
+            );
+        }
+        
+        // Security: Validate sale structure
+        function validateSale(sale) {
+            return (
+                typeof sale === 'object' &&
+                sale !== null &&
+                typeof sale.id === 'string' &&
+                typeof sale.productId === 'string' &&
+                typeof sale.name === 'string' &&
+                typeof sale.category === 'string' &&
+                (typeof sale.price === 'string' || typeof sale.price === 'number') &&
+                typeof sale.quantity === 'number' &&
+                (typeof sale.total === 'string' || typeof sale.total === 'number') &&
+                typeof sale.timestamp === 'string'
+            );
+        }
+        
+        function initData() {
+            // Load products with validation
+            const storedProducts = localStorage.getItem('m4tProducts');
+            if (storedProducts) {
+                try {
+                    const parsed = JSON.parse(storedProducts);
+                    products = {};
+                    Object.keys(parsed).forEach(cat => {
+                        if (Array.isArray(parsed[cat])) {
+                            products[cat] = parsed[cat].filter(validateProduct);
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error loading products:', e);
+                    products = createEmptyProducts();
+                }
+            } else {
+                products = createEmptyProducts();
+            }
+            
+            // Load sales with validation
+            const storedSales = localStorage.getItem('m4tSales');
+            if (storedSales) {
+                try {
+                    sales = JSON.parse(storedSales).filter(validateSale);
+                } catch (e) {
+                    console.error('Error loading sales:', e);
+                    sales = [];
+                }
+            }
+            
+            // Load WhatsApp number with validation
+            const storedWhatsApp = localStorage.getItem('m4tWhatsApp');
+            if (storedWhatsApp && /^[0-9]{10,}$/.test(storedWhatsApp)) {
+                whatsappNumber = storedWhatsApp;
+                document.getElementById('whatsappNumber').value = storedWhatsApp;
+            }
+        }
+        
+        function createEmptyProducts() {
+            return {
+                cars: [],
+                phones: [],
+                clothes: [],
+                daily: [],
+                food: [],
+                freelance: [],
+                jobs: [],
+                news: []
+            };
+        }
+        
+        function saveProducts() {
+            try {
+                localStorage.setItem('m4tProducts', JSON.stringify(products));
+            } catch (e) {
+                console.error('Error saving products:', e);
+                alert('ບໍ່ສາມາດບັນທຶກຂໍ້ມູນໄດ້');
+            }
+        }
+        
+        function saveSales() {
+            try {
+                localStorage.setItem('m4tSales', JSON.stringify(sales));
+            } catch (e) {
+                console.error('Error saving sales:', e);
+                alert('ບໍ່ສາມາດບັນທຶກຂໍ້ມູນການຂາຍໄດ້');
+            }
+        }
+        
+        function saveWhatsAppNumber() {
+            const newNumber = document.getElementById('whatsappNumber').value.trim();
+            if (newNumber && /^[0-9]{10,}$/.test(newNumber)) {
+                whatsappNumber = newNumber;
+                localStorage.setItem('m4tWhatsApp', newNumber);
+                alert('ບັນທຶກເບີ WhatsApp ສຳເລັດແລ້ວ!');
+            } else {
+                alert('ກະລຸນາປ້ອນເບີ WhatsApp ທີ່ຖືກຕ້ອງ (ຕົວເລກເທົ່ານັ້ນ)!');
+            }
+        }
+        
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        
+        function showCategory(category, event) {
+            currentCategory = category;
+            const titles = {
+                all: 'ທັງໝົດ',
+                cars: 'ລົດມືສອງ',
+                phones: 'ມືຖື & ອຸປະກອນເສີມ',
+                clothes: 'ເສື້ອຜ້າ',
+                daily: 'ເຄື່ອງໃຊ້ປະຈຳວັນ',
+                food: 'ອາຫານ & ເຄື່ອງດື່ມ',
+                freelance: 'ວຽກອິດສະຫຼະ',
+                jobs: 'ຫາວຽກ',
+                news: 'ຂ່າວສານ'
+            };
+            document.getElementById('categoryTitle').textContent = titles[category];
+            
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            renderProducts();
+            toggleMenu();
+        }
+        
+        function renderProducts(filteredProducts = null) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            let displayProducts = filteredProducts;
+            
+            if (!displayProducts) {
+                if (currentCategory === 'all') {
+                    displayProducts = [];
+                    Object.keys(products).forEach(cat => {
+                        displayProducts = displayProducts.concat(products[cat] || []);
+                    });
+                } else {
+                    displayProducts = products[currentCategory] || [];
+                }
+            }
+            
+            if (displayProducts.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-state';
+                const icon = document.createElement('div');
+                icon.className = 'empty-state-icon';
+                icon.textContent = '📦';
+                const text = document.createElement('div');
+                text.textContent = 'ຍັງບໍ່ມີລາຍການໃນໝວດນີ້';
+                emptyDiv.appendChild(icon);
+                emptyDiv.appendChild(text);
+                grid.appendChild(emptyDiv);
+                return;
+            }
+            
+            displayProducts.forEach((product) => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                const img = document.createElement('img');
+                img.src = product.image;
+                img.alt = sanitizeInput(product.name);
+                img.className = 'product-img';
+                img.onerror = function() {
+                    this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2220%22%3Eບໍ່ມີຮູບພາບ%3C/text%3E%3C/svg%3E';
+                };
+                
+                const info = document.createElement('div');
+                info.className = 'product-info';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'product-name';
+                nameDiv.title = sanitizeInput(product.name);
+                nameDiv.textContent = sanitizeInput(product.name);
+                
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'product-price';
+                priceDiv.textContent = typeof product.price === 'number' ? product.price.toLocaleString() + ' ກີບ' : sanitizeInput(product.price);
+                
+                const btn = document.createElement('button');
+                btn.className = 'whatsapp-btn';
+                btn.textContent = 'ຕິດຕໍ່ WhatsApp';
+                btn.onclick = () => sendWhatsApp(product.id, sanitizeInput(product.name), product.price, product.category);
+                
+                info.appendChild(nameDiv);
+                info.appendChild(priceDiv);
+                
+                if (!noQtyCategories.has(product.category)) {
+                    const qtyContainer = document.createElement('div');
+                    qtyContainer.className = 'quantity-container';
+                    const label = document.createElement('label');
+                    label.textContent = 'ຈຳນວນ:';
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.className = 'quantity-input';
+                    input.value = '1';
+                    input.min = '1';
+                    input.id = `qty-${product.id}`;
+                    qtyContainer.appendChild(label);
+                    qtyContainer.appendChild(input);
+                    info.appendChild(qtyContainer);
+                }
+                
+                info.appendChild(btn);
+                
+                card.appendChild(img);
+                card.appendChild(info);
+                grid.appendChild(card);
+            });
+        }
+        
+        function searchProducts(query) {
+            if (!query.trim()) {
+                renderProducts();
+                return;
+            }
+            
+            const searchLower = query.toLowerCase();
+            let allProducts = [];
+            
+            if (currentCategory === 'all') {
+                Object.keys(products).forEach(cat => {
+                    allProducts = allProducts.concat(products[cat] || []);
+                });
+            } else {
+                allProducts = products[currentCategory] || [];
+            }
+            
+            const filtered = allProducts.filter(p => 
+                p.name.toLowerCase().includes(searchLower)
+            );
+            
+            renderProducts(filtered);
+        }
+        
+        function sendWhatsApp(id, name, price, category) {
+            let qty = 1;
+            let total = price;
+            
+            if (!noQtyCategories.has(category)) {
+                const qtyInput = document.getElementById(`qty-${id}`);
+                qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+                if (typeof price === 'number') {
+                    total = price * qty;
+                } else {
+                    total = price; // If price is text, keep as is
+                }
+            }
+            
+            let message = `ສະບາຍດີ! ຂ້ອຍມາຈາກ ເວັບໄຊ M4T, ຂ້ອຍສົນໃຈ:\n\n`;
+            message += `📦 ສິນຄ້າ: ${name}\n`;
+            message += `💰 ລາຄາ: ${typeof price === 'number' ? price.toLocaleString() + ' ກີບ' : price}\n`;
+            
+            if (!noQtyCategories.has(category)) {
+                message += `🔢 ຈຳນວນ: ${qty} ຊິ້ນ\n`;
+                message += `💵 ລວມທັງໝົດ: ${typeof total === 'number' ? total.toLocaleString() + ' ກີບ' : total}\n`;
+            }
+            
+            message += `\nກະລຸນາຕິດຕໍ່ກັບຂ້ອຍ🥰`;
+            
+            // Record sale
+            const sale = {
+                id: Date.now().toString(),
+                productId: id,
+                name: name,
+                category: category,
+                price: price,
+                quantity: qty,
+                total: total,
+                timestamp: new Date().toLocaleString('lo-LA')
+            };
+            sales.push(sale);
+            saveSales();
+            
+            const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+        
+        function showAdminLogin() {
+            document.getElementById('loginModal').classList.add('active');
+            document.getElementById('adminPassword').focus();
+        }
+        
+        function handlePasswordEnter(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        }
+        
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            // Security: Use a more secure check, but since client-side, it's limited. Consider server-side for production.
+            if (password === '2004') { // Note: Hardcoded passwords are insecure; use hashing in production with server.
+                closeModal('loginModal');
+                document.getElementById('adminModal').classList.add('active');
+                document.getElementById('adminPassword').value = '';
+            } else {
+                alert('ລະຫັດຜິດ!');
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        function addProduct() {
+            const category = document.getElementById('adminCategory').value;
+            const image = document.getElementById('productImage').value.trim();
+            const name = sanitizeInput(document.getElementById('productName').value.trim());
+            const priceInput = document.getElementById('productPrice').value.trim();
+            
+            let price = priceInput;
+            const parsedPrice = parseFloat(priceInput);
+            if (!isNaN(parsedPrice) && parsedPrice > 0) {
+                price = parsedPrice;
+            }
+            
+            if (!isValidUrl(image) || !name || !priceInput) {
+                alert('ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບຖ້ວນ ແລະ ຖືກຕ້ອງ! (URL ຕ້ອງເປັນ valid URL)');
+                return;
+            }
+            
+            // Save WhatsApp number if updated
+            saveWhatsAppNumber();
+            
+            const product = {
+                id: Date.now().toString(),
+                category: category,
+                image: image,
+                name: name,
+                price: price
+            };
+            
+            if (!products[category]) {
+                products[category] = [];
+            }
+            
+            products[category].push(product);
+            saveProducts();
+            
+            document.getElementById('productImage').value = '';
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            
+            alert('ເພີ່ມສິນຄ້າສຳເລັດແລ້ວ!');
+            renderProducts();
+        }
+        
+        function showDeleteList() {
+            const category = document.getElementById('adminCategory').value;
+            document.getElementById('deleteCategory').value = category;
+            updateDeleteList('');
+            closeModal('adminModal');
+            document.getElementById('deleteModal').classList.add('active');
+        }
+        
+        function updateDeleteList(searchQuery = '') {
+            const category = document.getElementById('deleteCategory').value;
+            const list = document.getElementById('deleteList');
+            list.innerHTML = '';
+            
+            const categoryProducts = products[category] || [];
+            let filteredProducts = categoryProducts;
+            
+            if (searchQuery.trim()) {
+                const searchLower = searchQuery.toLowerCase();
+                filteredProducts = categoryProducts.filter(p => 
+                    p.name.toLowerCase().includes(searchLower)
+                );
+            }
+            
+            if (filteredProducts.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'empty-state';
+                empty.textContent = 'ບໍ່ມີສິນຄ້າໃນໝວດນີ້';
+                list.appendChild(empty);
+                return;
+            }
+            
+            filteredProducts.forEach((product, index) => {
+                const item = document.createElement('div');
+                item.className = 'product-item';
+                
+                const span = document.createElement('span');
+                span.textContent = `${sanitizeInput(product.name)} - ${typeof product.price === 'number' ? product.price.toLocaleString() + ' ກີບ' : sanitizeInput(product.price)}`;
+                
+                const btn = document.createElement('button');
+                btn.className = 'delete-btn';
+                btn.textContent = 'ລຶບ';
+                btn.onclick = () => deleteProduct(category, index);
+                
+                item.appendChild(span);
+                item.appendChild(btn);
+                list.appendChild(item);
+            });
+        }
+        
+        function deleteProduct(category, index) {
+            if (confirm('ຕ້ອງການລຶບສິນຄ້ານີ້ແທ້ບໍ່?')) {
+                if (products[category] && products[category][index]) {
+                    products[category].splice(index, 1);
+                    saveProducts();
+                    renderProducts();
+                    updateDeleteList('');
+                    alert('ລຶບສິນຄ້າສຳເລັດແລ້ວ!');
+                }
+            }
+        }
+        
+        function showSalesList() {
+            closeModal('adminModal');
+            document.getElementById('salesModal').classList.add('active');
+            updateSalesList();
+        }
+        
+        function updateSalesList() {
+            const list = document.getElementById('salesList');
+            list.innerHTML = '';
+            
+            if (sales.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'empty-state';
+                empty.textContent = 'ຍັງບໍ່ມີລາຍການຂາຍ';
+                list.appendChild(empty);
+                return;
+            }
+            
+            sales.forEach((sale, index) => {
+                const item = document.createElement('div');
+                item.className = 'sales-item';
+                
+                const span = document.createElement('span');
+                span.textContent = `${sanitizeInput(sale.name)} (${sale.quantity} ຊິ້ນ, ${typeof sale.total === 'number' ? sale.total.toLocaleString() + ' ກີບ' : sanitizeInput(sale.total)}) - ${sanitizeInput(sale.timestamp)}`;
+                
+                const btn = document.createElement('button');
+                btn.className = 'delete-btn';
+                btn.textContent = 'ລຶບ';
+                btn.onclick = () => deleteSale(index);
+                
+                item.appendChild(span);
+                item.appendChild(btn);
+                list.appendChild(item);
+            });
+        }
+        
+        function deleteSale(index) {
+            if (confirm('ຕ້ອງການລຶບລາຍການຂາຍນີ້ແທ້ບໍ່?')) {
+                sales.splice(index, 1);
+                saveSales();
+                updateSalesList();
+                alert('ລຶບລາຍການຂາຍສຳເລັດແລ້ວ!');
+            }
+        }
+        
+        function closeDeleteModal() {
+            closeModal('deleteModal');
+            document.getElementById('adminModal').classList.add('active');
+        }
+        
+        // Security: Prevent common attacks
+        // - CSP: Add via meta if needed, but for this script, it's client-side only
+        // - No eval or Function constructors
+        // - Input sanitization everywhere
+        // - Validation on all data loads/saves
+        // - For production: Move auth to server, use HTTPS, CSRF if server involved
+        
+        initData();
+        renderProducts();
+    </script>
+</body>
+</html>
